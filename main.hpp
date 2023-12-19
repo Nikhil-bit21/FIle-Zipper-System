@@ -1,95 +1,88 @@
- //Header Guards to prevent header files from being included multiple times taki if ek file kahi or bhi include hai tho error na aae
+ //Header Guards to prevent header files from being included multiple times
 #ifndef HUFFMAN_HPP
 #define HUFFMAN_HPP
-
-#include<string>
-#include<vector>
-#include<queue>
-// file ko save karne or import krliye ke liye .
-#include<fstream>
-
+#include <string>
+#include <vector>
+#include <queue>
+#include <fstream>
 using namespace std;
 
-// it is same as class just all its members are default public .
-struct Node{
-    char data ;
+//Defining Huffman Tree Node
+struct Node {
+    char data;
     unsigned freq;
     string code;
-    Node *left , *right;
+    Node *left, *right;
 
-    Node(){
+    Node() {
         left = right = NULL;
     }
 };
 
-class huffman{
+class huffman {
     private:
-    vector<Node*> arr;
+        vector <Node*> arr;
 
-    fstream inFile , outFile;
+        fstream inFile, outFile;
 
-    string inFileName , outFileName;
+        string inFileName, outFileName;
+        
+        Node *root;
+        
+        class Compare {
+            public:
+                bool operator() (Node* l, Node* r)
+                {
+                    return l->freq > r->freq;
+                }
+        };
 
-    Node *root;
+        priority_queue <Node*, vector<Node*>, Compare> minHeap;
+        
+        //Initializing a vector of tree nodes representing character's ascii value and initializing its frequency with 0
+        void createArr();
+        
+        //Traversing the constructed tree to generate huffman codes of each present character
+        void traverse(Node*, string);
+        
+        //Function to convert binary string to its equivalent decimal value
+        int binToDec(string);
+        
+        //Function to convert a decimal number to its equivalent binary string
+        string decToBin(int);
+        
+        //Reconstructing the Huffman tree while Decoding the file
+        void buildTree(char, string&);
 
-    class compare{
-        public:
-        bool operator()(Node* l , Node* r){
-            return l->freq > r->freq;
-        }
-    };
-
-    priority_queue <Node*, vector<Node*>, compare> minHeap;
-
-    //Initializing a vector of tree nodes representing character's ascii value and initializing its frequency with 0
-    void createArr();
-
-    //Traversing the constructed tree to generate huffman codes of each present character
-    void traverse(Node*, string);
+        //Creating Min Heap of Nodes by frequency of characters in the input file
+        void createMinHeap();
         
-    //Function to convert binary string to its equivalent decimal value
-    int binToDec(string);
+        //Constructing the Huffman tree
+        void createTree();
         
-    //Function to convert a decimal number to its equivalent binary string
-    string decToBin(int);
+        //Generating Huffman codes
+        void createCodes();
         
-    //Reconstructing the Huffman tree while Decoding the file
-    void buildTree(char, string&);
-
-    //Creating Min Heap of Nodes by frequency of characters in the input file
-    void createMinHeap();
+        //Saving Huffman Encoded File
+        void saveEncodedFile();
         
-    //Constructing the Huffman tree
-    void createTree();
+        //Saving Decoded File to obtain the original File
+        void saveDecodedFile();
         
-    //Generating Huffman codes
-    void createCodes();
-        
-    //Saving Huffman Encoded File
-    void saveEncodedFile();
-        
-    //Saving Decoded File to obtain the original File
-    void saveDecodedFile();
-        
-    //Reading the file to reconstruct the Huffman tree
-    void getTree();
+        //Reading the file to reconstruct the Huffman tree
+        void getTree();
 
     public:
-
-    //Constructor
-    huffman(string inFileName , string outFileName){
-        this->inFileName = inFileName;
-        this->outFileName = outFileName;
-        createArr();
-    }
-
-    //Compressing input file
-    void compress();
-    //Decrompressing input file
-    void decompress();
-
+        //Constructor
+        huffman(string inFileName, string outFileName)
+        {
+            this->inFileName = inFileName;
+            this->outFileName = outFileName;
+            createArr();
+        }
+        //Compressing input file
+        void compress();
+        //Decrompressing input file
+        void decompress();
 };
-
-
-
 #endif
